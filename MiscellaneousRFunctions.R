@@ -1,4 +1,50 @@
+# 
 
+createFolder <- function(.path, .name) {
+  .increment <- 1
+  .folder_name <- .name
+  # CHECK IF FOLDER EXISTS AND RENAME NEW FOLDER ACCORDINGLY
+  while ( !dir.create(paste0(.path, .folder_name), showWarnings = F) ) {
+    .folder_name <- paste0(.name, "_copy_", .increment)
+    .increment <- .increment + 1
+  }
+  return(paste0(.path, .folder_name, "/"))    
+}
+
+# Removes rows with NAs in specified columns
+
+removeNAs <- function(.df, .vars) {  
+  
+  to_remove <- llply(.vars, function(..var, ..df) {
+    ..na_vals <- which(is.na(..df[[..var]]))
+    if (length(..na_vals) < 1) {
+      print(paste0("No missing values found in ", ..var))
+      return(NA)
+    } else { 
+      print(paste0(length(..na_vals), " missing value(s) found in ", ..var))
+      return(..na_vals)
+    }
+  }, .df)
+
+  to_remove <- unique( unlist(to_remove))
+  to_remove <- to_remove[!is.na(to_remove)]
+
+  if (length(to_remove) < 1) {
+    print(paste0("No missing values found in specified variables, returning original dataset"))
+    return(.df)
+  } 
+  if (length(to_remove) == nrow(.df)) {
+    print(paste0("All observations have missing values, returning empty dataset"))
+    return(.df[-to_remove, ])
+  } 
+  if (length(to_remove) > 1){ 
+    print(paste0(length(to_remove), " observation(s) with missing values removed from dataset ", nrow(.df[-to_remove, ]), " remaining"))
+    return(.df[-to_remove, ])
+  }  
+}
+
+# test <- data.frame(x = c(1,2,3,4,5), y = c(9,8,7,NA,4), z = c(NA, NA, NA, 5, NA))
+# removeNAs(test, c("x", "y", "z"))
 
 # Returns the number of unique values in an array
 cUnique <- function(x, count.na = FALSE) {
@@ -53,9 +99,11 @@ showNAs <- function(temp_df) {
   to_return <- ldply(df_names, function(var_name, temp_df) {
     to_return <- temp_df[[var_name]]
     to_return[to_return == "MISSING"] <- NA
+    to_return[to_return == ""] <- NA
     return( data.frame(var = var_name, 
                        NA_count = sum(is.na(to_return)),
-                       NA_mean = mean(is.na(to_return))))
+                       NA_mean = mean(is.na(to_return)),
+                       stringsAsFactors = F))
   }, temp_df)
   return(to_return)
 }

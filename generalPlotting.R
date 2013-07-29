@@ -38,9 +38,15 @@ blankground <- function() {
 
 # For generating a residual QQ plot from a lm object
 
-ggQQ_lims <- function(LM, title = "", lincol = "#999999") # argument: a linear model
+ggQQ_lims <- function(LM, title = "", lincol = "#999999", resids = F) # argument: a linear model
 {
-  resids <- LM$resid[!is.na(LM$resid)]
+  if(!resids) { 
+    resids <- LM$resid[!is.na(LM$resid)]
+  }
+  if(resids) { 
+    resids <- LM[!is.na(LM)]
+  }
+  
   .df <- data.frame(y = sort(resids),
                     x = qnorm( seq(1, length(resids),1)/ (length(resids)+1) ))
   slope <- diff( quantile(.df$y, c(0.25, 0.75)))/diff(qnorm(c(0.25, 0.75)))
