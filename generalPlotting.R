@@ -1,7 +1,9 @@
+library(RColorBrewer)
+library(scales)
 
 # A theme for facet plots
 theme_facet <- function() {
-  return(theme_bw() + theme(strip.background = element_rect(color="white", fill = "white"),
+  return(theme_bw() + theme(strip.background = element_rect(color="black", fill = "white"),
                             panel.margin = unit(0.05,"null") ))
 }
 
@@ -32,6 +34,43 @@ blankground <- function() {
         axis.title.y = element_blank(),
         axis.ticks = element_blank()
         
+  )
+}
+
+## Taken from here: http://sape.inf.usi.ch/quick-reference/ggplot2/themes 
+## and here :https://github.com/hadley/ggplot2/blob/ggplot2-0.9.2/R/theme-defaults.r
+theme_complete_bw <- function(base_size = 12, base_family = "") {
+  theme_grey(base_size = base_size, base_family = base_family) %+replace%
+  theme(
+    axis.line =         element_blank(),
+    axis.text.x =       element_text(size = base_size * 0.8 , lineheight = 0.9, colour = "black", vjust = 1),
+    axis.text.y =       element_text(size = base_size * 0.8, lineheight = 0.9, colour = "black", hjust = 1),
+    axis.ticks =        element_line(colour = "black"),
+    axis.title.x =      element_text(size = base_size, vjust = 0.5),
+    axis.title.y =      element_text(size = base_size, angle = 90, vjust = 0.5),
+    axis.ticks.length = unit(0.15, "cm"),
+    axis.ticks.margin = unit(0.1, "cm"),
+    
+    legend.background = element_rect(colour=NA), 
+    legend.key =        element_rect(fill = NA, colour = "black", size = 0.25),
+    legend.key.size =   unit(1.2, "lines"),
+    legend.text =       element_text(size = base_size * 0.8),
+    legend.title =      element_text(size = base_size * 0.8, face = "bold", hjust = 0),
+    legend.position =   "right",
+    
+    panel.background =  element_rect(fill = NA, colour = "black", size = 0.25), 
+    panel.border =      element_blank(),
+    panel.grid.major =  element_blank(), #element_line(colour = "#aaaaaa", size = 0.05),
+    panel.grid.minor =  element_blank(), #element_line(colour = "#aaaaaa", size = 0.05),
+    panel.margin =      unit(0.25, "lines"),
+    
+    strip.background =  element_rect(fill = NA, colour = NA), 
+    strip.text.x =      element_text(colour = "black", size = base_size * 0.8),
+    strip.text.y =      element_text(colour = "black", size = base_size * 0.8, angle = -90),
+    
+    plot.background =   element_rect(colour = NA, fill = "white"),
+    plot.title =        element_text(size = base_size * 1.2),
+    plot.margin =       unit(c(1, 1, 0.5, 0.5), "lines")
   )
 }
 
@@ -107,13 +146,17 @@ plot_categorical_summary <- function(.groups, .cat_vars, .output, w = 12, h = 8,
 #  ex. .cat_vars <- list( list("VAR_1", "Pretty var 1 name to use in plot"),
 #                        list("VAR_2", "Pretty var 2 name to use in plot"),
 #                        etc.)
+# .groups <- culled_groups
+# .cont_vars <- cont.vars.to.summarize
+# .var <- .cont_vars[[2]]
+
 plot_continuous_summary <- function(.groups, .cont_vars, .output, w = 12, h = 8) {
   .var_cats <- names(.cont_vars)
   .df <- ldply(.groups, identity)
   .plots <- list()
   for (.var in .cont_vars) {
     print(.var[[1]])
-    
+#     .df[1,]
     .to_plot <- .df[ ,c(.var[[1]], ".id")]
     names(.to_plot) <- c('y', 'x')
     ktest <- kruskal.test(.to_plot, y ~ x)$p.value
@@ -121,11 +164,11 @@ plot_continuous_summary <- function(.groups, .cont_vars, .output, w = 12, h = 8)
     summary(.to_plot)
     .plots[[.var[[1]]]] <- ggplot(data = .to_plot, aes(x = x, y = y)) + geom_boxplot() +
       scale_x_discrete("") + 
-      scale_y_continuous(.var[[2]]) +
+      scale_y_continuous(.var[[1]]) +
       coord_flip() +
       ggtitle(paste0(.var[[2]], " - Kruskal Wallis p ", ktest)) +
       theme_bw()
-    if (min(.to_plot$y) > 0 ) {
+    if (min(.to_plot$y, na.rm = T) > 0 ) {
       ktest <- kruskal.test(.to_plot, log(y) ~ x)$p.value
       ktest <- ifelse(ktest < 0.001, "< 0.001", paste0("= ", round(ktest,3)))
       .plots[[paste0(.var[[1]], " log")]] <- ggplot(data = .to_plot, aes(x = x, y = log(y))) + geom_boxplot() +
@@ -142,6 +185,19 @@ plot_continuous_summary <- function(.groups, .cont_vars, .output, w = 12, h = 8)
   
 }
 
+
+# Converts factors into numeric or character arrays
+factorConvert <- function(var, to_type = "numeric") {
+  
+  if (to_type == "numeric" ){
+    to_return <- as.numeric(levels(var)[as.numeric(var)])
+  }
+  
+  if (to_type == "character" ){
+    to_return <- levels(var)[as.numeric(var)]
+  }
+  return(to_return)
+}
 
 # generates kaplan-meier plot using ggplot2
 # sfit is object returned by survfit function
@@ -166,6 +222,7 @@ ggkm <- function(sfit,
                  pval = TRUE,
                  subs = NULL,
                  pal = "Black",
+                 strata_label = "Strata",
                  ...) {
   
   #############
@@ -262,8 +319,8 @@ ggkm <- function(sfit,
   #ylims <- c(0.95, 1)
   p <- ggplot( .df, aes(x = time, y = surv, linetype = factor(strata), color = factor(strata))) +
     geom_step(size = 0.7) +
-    scale_linetype_manual("Strata", values = .df$strata) + 
-    scale_color_manual("Strata", values = pall) +
+    scale_linetype_manual(strata_label, values = .df$strata) + 
+    scale_color_manual(strata_label, values = pall) +
     theme_bw() +
     theme(axis.title.x = element_text(vjust = 0.5)) +
     scale_x_continuous(xlabs, breaks = xbreaks, limits = xlims/timeby) +
@@ -299,5 +356,6 @@ ggkm <- function(sfit,
   if(returns) return(p)
 }
 
+theme_set(theme_complete_bw())
 
 generalPlottingLoaded <- TRUE

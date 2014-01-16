@@ -1,4 +1,21 @@
+
+exp10 <- function(x) {
+  return (10^x)
+}
 # 
+
+colClasses <- function(.df) {  
+  
+  .cols <- rep(NA, length(.df[1,]) )
+  .class <- rep(NA, length(.df[1,]) )
+  
+  for (.col in 1:length(.df[1,]) ) {
+    print(class(.df[[.col]]))
+    .cols[.col] <-names(.df)[.col]
+    .class[.col] <- class(.df[[.col]])
+  }
+  return(data.frame(col = .cols, class = .class, stringsAsFactors = F) )
+}
 
 createFolder <- function(.path, .name) {
   .increment <- 1
@@ -21,7 +38,7 @@ removeNAs <- function(.df, .vars) {
       print(paste0("No missing values found in ", ..var))
       return(NA)
     } else { 
-      print(paste0(length(..na_vals), " missing value(s) found in ", ..var))
+      print(paste0(length(..na_vals), " (", round( length(..na_vals)/length(..df[[..var]]),3)*100, "%) missing value(s) found in ", ..var))
       return(..na_vals)
     }
   }, .df)
@@ -30,7 +47,7 @@ removeNAs <- function(.df, .vars) {
   to_remove <- to_remove[!is.na(to_remove)]
 
   if (length(to_remove) < 1) {
-    print(paste0("No missing values found in specified variables, returning original dataset"))
+    print(paste0("No missing values found in specified variables, returning original dataset with ", nrow(.df), " observations."))
     return(.df)
   } 
   if (length(to_remove) == nrow(.df)) {
@@ -38,7 +55,7 @@ removeNAs <- function(.df, .vars) {
     return(.df[-to_remove, ])
   } 
   if (length(to_remove) > 1){ 
-    print(paste0(length(to_remove), " observation(s) with missing values removed from dataset ", nrow(.df[-to_remove, ]), " remaining"))
+    print(paste0(length(to_remove), " observation(s) with missing values removed from dataset, ", nrow(.df[-to_remove, ]), " of ", nrow(.df), " remaining"))
     return(.df[-to_remove, ])
   }  
 }
