@@ -1,3 +1,9 @@
+logit <- function(x) {
+  log( x / ( 1-x ) )
+}
+alogit <- function(x) {
+  exp( x ) / ( 1 + exp(x) ) 
+}
 
 exp10 <- function(x) {
   return (10^x)
@@ -78,13 +84,13 @@ cUnique <- function(x, count.na = FALSE) {
 # string
 # if merge == TRUE, a dataframe of merged files is returned, 
 #   else a list with an element corresponding to each file is returned
-openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_str =",") {
+openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_str =",", na.strings = ".") {
   
   file_array <-  paste0(directory, "/", list.files(directory)[grep(pattern=match_string, list.files(directory))])
   
   data_list <- llply(file_array, function(file_path, delim_str) {
     print(file_path)
-    to_return <- read.table(file = file_path, header = TRUE, sep = delim_str, stringsAsFactors = FALSE, fill=TRUE, quote="\"" )
+    to_return <- read.table(file = file_path, header = TRUE, sep = delim_str, stringsAsFactors = FALSE, fill=TRUE, quote="\"", na.strings = na.strings )
     to_return["loaded_file_name"] <- tail(strsplit(file_path, "/")[[1]],1)
     return(to_return)
   }, delim_str)
@@ -174,6 +180,9 @@ showUniqueValuesFirstWord <- function(temp_df) {
   return(to_return)
 }
 
+removeCols <- function(.df, match_string) {
+  return(.df[ ,!grepl(match_string, names(.df))])
+}
 
 ##### KK 2013-04-08: Added manual list of k values at which to calculate gap widths
 ##### From here: https://svn.r-project.org/R-packages/trunk/cluster/R/clusGap.R

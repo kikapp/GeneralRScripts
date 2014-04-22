@@ -47,7 +47,7 @@ theme_complete_bw <- function(base_size = 12, base_family = "") {
     axis.text.y =       element_text(size = base_size * 0.8, lineheight = 0.9, colour = "black", hjust = 1),
     axis.ticks =        element_line(colour = "black"),
     axis.title.x =      element_text(size = base_size, vjust = 0.5),
-    axis.title.y =      element_text(size = base_size, angle = 90, vjust = 0.5),
+    axis.title.y =      element_text(size = base_size, angle = 0), #, vjust = 0.5),
     axis.ticks.length = unit(0.15, "cm"),
     axis.ticks.margin = unit(0.1, "cm"),
     
