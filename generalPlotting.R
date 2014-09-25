@@ -1,5 +1,9 @@
+library(ggplot2)
 library(RColorBrewer)
 library(scales)
+library(ggthemes)
+library(grid)
+library(gridExtra)
 
 # A theme for facet plots
 theme_facet <- function() {
