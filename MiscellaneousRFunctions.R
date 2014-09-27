@@ -1,6 +1,7 @@
 logit <- function(x) {
   log( x / ( 1-x ) )
 }
+
 alogit <- function(x) {
   exp( x ) / ( 1 + exp(x) ) 
 }
@@ -8,12 +9,13 @@ alogit <- function(x) {
 exp10 <- function(x) {
   return (10^x)
 }
-# 
 
 iqr <- function(x) {
   return(quantile(x, 0.75, na.rm = T) - quantile(x, 0.25, na.rm = T))
 }
 
+
+# Returns classes for each column in a dataframe
 colClasses <- function(.df) {  
   
   .cols <- rep(NA, length(.df[1,]) )
@@ -27,6 +29,10 @@ colClasses <- function(.df) {
   return(data.frame(col = .cols, class = .class, stringsAsFactors = F) )
 }
 
+# Creates a folder .name at specified .path
+# If .name already exists at .path, creates a 
+# folder called .name_copy_x where x is an auto-
+# incremented integer
 createFolder <- function(.path, .name) {
   .increment <- 1
   .folder_name <- .name
@@ -38,8 +44,9 @@ createFolder <- function(.path, .name) {
   return(paste0(.path, .folder_name, "/"))    
 }
 
-# Removes rows with NAs in specified columns
-
+# Removes rows with NAs in .df
+# in columns specified by 
+# array of column names .vars
 removeNAs <- function(.df, .vars) {  
   
   to_remove <- llply(.vars, function(..var, ..df) {
@@ -70,8 +77,6 @@ removeNAs <- function(.df, .vars) {
   }  
 }
 
-# test <- data.frame(x = c(1,2,3,4,5), y = c(9,8,7,NA,4), z = c(NA, NA, NA, 5, NA))
-# removeNAs(test, c("x", "y", "z"))
 
 # Returns the number of unique values in an array
 cUnique <- function(x, count.na = FALSE) {
@@ -120,7 +125,6 @@ factorConvert <- function(var, to_type = "numeric") {
 }
 
 # Shows the extent of NAs in a data frame
-
 showNAs <- function(temp_df) {
   df_names <- names(temp_df)
   to_return <- ldply(df_names, function(var_name, temp_df) {
@@ -184,6 +188,8 @@ showUniqueValuesFirstWord <- function(temp_df) {
   return(to_return)
 }
 
+# removes all columns whose names are matched by match_string
+# from data frame .df
 removeCols <- function(.df, match_string) {
   return(.df[ ,!grepl(match_string, names(.df))])
 }
@@ -268,30 +274,6 @@ clusGapManualK <- function (x, FUNcluster, K.max, k_arr = seq(2,10,1), B = 100, 
 }
 
 
-
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)
-}
-
-blankground <- function() {
-  theme(panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        
-        panel.margin = unit(0,"null"),
-        plot.margin = rep(unit(0,"null"),4),
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
-        axis.ticks = element_blank()
-        
-  )
-}
 
 miscRLoaded <- TRUE
 

@@ -5,6 +5,8 @@ library(ggthemes)
 library(grid)
 library(gridExtra)
 
+
+
 # A theme for facet plots
 theme_facet <- function() {
   return(theme_bw() + theme(strip.background = element_rect(color="black", fill = "white"),
@@ -78,6 +80,14 @@ theme_complete_bw <- function(base_size = 12, base_family = "") {
   )
 }
 
+
+# returns the legend from a ggplot object
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+}
 
 # For generating a residual QQ plot from a lm object
 
@@ -187,20 +197,6 @@ plot_continuous_summary <- function(.groups, .cont_vars, .output, w = 12, h = 8)
   l_ply(.plots, print)
   dev.off()
   
-}
-
-
-# Converts factors into numeric or character arrays
-factorConvert <- function(var, to_type = "numeric") {
-  
-  if (to_type == "numeric" ){
-    to_return <- as.numeric(levels(var)[as.numeric(var)])
-  }
-  
-  if (to_type == "character" ){
-    to_return <- levels(var)[as.numeric(var)]
-  }
-  return(to_return)
 }
 
 # generates kaplan-meier plot using ggplot2
