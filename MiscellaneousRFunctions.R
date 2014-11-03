@@ -93,13 +93,13 @@ cUnique <- function(x, count.na = FALSE) {
 # string
 # if merge == TRUE, a dataframe of merged files is returned, 
 #   else a list with an element corresponding to each file is returned
-openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_str =",", na.strings = ".", header = T, fill=T) {
+openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_str =",", na.strings = ".", header = T, fill=T, skip = 0) {
   
   file_array <-  paste0(directory, "/", list.files(directory)[grep(pattern=match_string, list.files(directory))])
   
   data_list <- llply(file_array, function(file_path, delim_str) {
     print(file_path)
-    to_return <- read.table(file = file_path, header = header, sep = delim_str, stringsAsFactors = FALSE, fill=fill, quote="\"", na.strings = na.strings )
+    to_return <- read.table(file = file_path, header = header, sep = delim_str, stringsAsFactors = FALSE, fill=fill, quote="\"", na.strings = na.strings, skip = skip )
     to_return["loaded_file_name"] <- tail(strsplit(file_path, "/")[[1]],1)
     return(to_return)
   }, delim_str)
