@@ -114,11 +114,11 @@ openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_s
 # Converts factors into numeric or character arrays
 factorConvert <- function(var, to_type = "numeric") {
   
-  if (to_type == "numeric" ){
+  if (to_type %in% c("numeric", "n") ){
     to_return <- as.numeric(levels(var)[as.numeric(var)])
   }
   
-  if (to_type == "character" ){
+  if (to_type %in% c("character", "c") ){
     to_return <- levels(var)[as.numeric(var)]
   }
   return(to_return)
