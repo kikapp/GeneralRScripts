@@ -560,7 +560,9 @@ cat.chisq.test <- function(dlist, varname.array) {
 # list.of.varnames <- table_vars
 # variable.name <- cat_var_list[[1]]
 # varname.array <- cat.vars.to.summarize[[32]]
-
+# list.of.data <-data_list 
+# list.of.varnames <- table_vars
+# p.test = F
 aggregate.cat.sum <- function(list.of.data, list.of.varnames, p.test = TRUE) {
   list.of.tables <- llply(list.of.varnames, function(var.info, data.list) {
     print(var.info[[1]])
@@ -602,7 +604,7 @@ aggregate.cat.sum <- function(list.of.data, list.of.varnames, p.test = TRUE) {
   #Remove duplicate column names
   rows.to.change <- grep(c(names(list.of.data)[1]), to.return[,2])[-1]
   if ( length(rows.to.change) > 0) {
-    to.return[rows.to.change,c(2:(length(to.return[1,])-1))] <- ""
+    to.return[rows.to.change,c(2:(length(to.return[1,])))] <- ""
   }
   # 	print("Passed rows to change")
   return(to.return)							
