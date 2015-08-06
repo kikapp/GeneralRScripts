@@ -14,6 +14,9 @@ iqr <- function(x) {
   return(quantile(x, 0.75, na.rm = T) - quantile(x, 0.25, na.rm = T))
 }
 
+printDec <- function(.x, .dec = 2) {
+  format(round(.x, .dec), nsmall = .dec)
+}
 
 # Returns classes for each column in a dataframe
 colClasses <- function(.df) {  
@@ -71,7 +74,7 @@ removeNAs <- function(.df, .vars) {
     print(paste0("All observations have missing values, returning empty dataset"))
     return(.df[-to_remove, ])
   } 
-  if (length(to_remove) > 1){ 
+  if (length(to_remove) >= 1){ 
     print(paste0(length(to_remove), " observation(s) with missing values removed from dataset, ", nrow(.df[-to_remove, ]), " of ", nrow(.df), " remaining"))
     return(.df[-to_remove, ])
   }  
