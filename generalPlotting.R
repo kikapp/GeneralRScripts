@@ -199,6 +199,31 @@ plot_continuous_summary <- function(.groups, .cont_vars, .output, w = 12, h = 8)
   
 }
 
+#takes a survfit object as input and returns a plot-able data frame
+getKMData <- function(.survfit) {
+  
+  ldply(names(.survfit$strata), function(..strata, ..survfit) {
+    if (which(names(..survfit$strata) == ..strata) == 1) {
+      .indices <- 1:cumsum(..survfit$strata)[1]
+    } else {
+      .indices <- (cumsum(..survfit$strata)[which(names(..survfit$strata) == ..strata) - 1] + 1):cumsum(..survfit$strata)[which(names(..survfit$strata) == ..strata)]
+    }
+    .tor <- data.frame(strata = ..strata,
+                       time = ..survfit$time[.indices],
+                       n_risk = ..survfit$n.risk[.indices],
+                       n_event  = ..survfit$n.event[.indices],
+                       n_censor = ..survfit$n.censor[.indices],
+                       surv = ..survfit$surv[.indices],
+                       std_err = ..survfit$std.err[.indices],
+                       upper = ..survfit$upper[.indices],
+                       lower = ..survfit$lower[.indices],
+                       conf_type = ..survfit$conf.type,
+                       conf_int = ..survfit$conf.int)
+    .tor    
+    
+  }, .survfit)
+}
+
 # generates kaplan-meier plot using ggplot2
 # sfit is object returned by survfit function
 # requires survival and ggplot2
