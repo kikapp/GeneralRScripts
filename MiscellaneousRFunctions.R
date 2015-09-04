@@ -15,9 +15,10 @@ iqr <- function(x) {
 }
 
 printDec <- function(.x, .dec = 2) {
-  format(round(.x, .dec), nsmall = .dec)
+  gsub(" {1,}", "", format(round(.x, .dec), nsmall = .dec))
 }
 
+printDec(c(10,1,0.1,0.111), 5)
 # Returns classes for each column in a dataframe
 colClasses <- function(.df) {  
   
