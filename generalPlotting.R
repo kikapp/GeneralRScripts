@@ -72,7 +72,7 @@ theme_complete_bw <- function(base_size = 12, base_family = "") {
     
     strip.background =  element_rect(fill = NA, colour = NA), 
     strip.text.x =      element_text(colour = "black", size = base_size * 0.8),
-    strip.text.y =      element_text(colour = "black", size = base_size * 0.8, angle = -90),
+    strip.text.y =      element_text(colour = "black", size = base_size * 0.8, angle = 0),
     
     plot.background =   element_rect(colour = NA, fill = "white"),
     plot.title =        element_text(size = base_size * 1.2),
