@@ -1,1 +1,3 @@
 Utility r functions
+
+These scripts collect a number of functions that I use in my work on a regular basis. Some of this code is fairly old and reflects the practices of someone who wasn't super good at writing nice R code. More recent commits better reflect best practices.
