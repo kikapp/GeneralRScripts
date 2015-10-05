@@ -102,7 +102,7 @@ openFilesInDirectory <- function(directory, match_string, merge = FALSE, delim_s
   file_array <-  paste0(directory, "/", list.files(directory)[grep(pattern=match_string, list.files(directory))])
   
   data_list <- llply(file_array, function(file_path, delim_str) {
-    print(file_path)
+    cat(file_path, "\n")
     to_return <- read.table(file = file_path, header = header, sep = delim_str, stringsAsFactors = FALSE, fill=fill, quote="\"", na.strings = na.strings, skip = skip )
     to_return["loaded_file_name"] <- tail(strsplit(file_path, "/")[[1]],1)
     return(to_return)
