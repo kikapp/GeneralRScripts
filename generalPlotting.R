@@ -68,7 +68,7 @@ theme_complete_bw <- function(base_size = 12, base_family = "") {
     panel.border =      element_blank(),
     panel.grid.major =  element_blank(), #element_line(colour = "#aaaaaa", size = 0.05),
     panel.grid.minor =  element_blank(), #element_line(colour = "#aaaaaa", size = 0.05),
-    panel.margin =      unit(0.25, "lines"),
+    # panel.margin =      unit(0.25, "lines"),
     
     strip.background =  element_rect(fill = NA, colour = NA), 
     strip.text.x =      element_text(colour = "black", size = base_size * 0.8),
