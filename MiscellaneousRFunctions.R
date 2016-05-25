@@ -295,6 +295,48 @@ clusGapManualK <- function (x, FUNcluster, K.max, k_arr = seq(2,10,1), B = 100, 
 }
 
 
+colsToChars <- function(.df) {
+  
+  for(..var in names(.df) ) {
+    .df[[..var]] <- as.character(.df[[..var]])
+  }
+  
+  .df
+}
+
+
+insertBlankRows <- function(.df, .pos = 1, .nrow = 1) {
+  
+  .rows <- .df[NULL,]
+  .rows <- .rows[1:.nrow,]
+  .rows <- colsToChars(.rows)
+  .rows[1:.nrow,] <- ""
+  warning("All variables have been converted to character")
+  
+  if(.pos == 1) {
+    .tor <- rbind(.rows, .df)
+  }
+  
+  if(.pos > 1 & .pos < nrow(.df)) {
+    .tor <- rbind(.df[1:.pos,],
+                  .rows, 
+                  .df[(.pos+1):nrow(.df),])
+  }
+  
+  if(.pos == nrow(.df)) {
+    .tor <- rbind(.df,
+                  .rows)
+  }
+  
+  if(.pos > nrow(.df)) {
+    stop("Specified insertion point is past the end of the data frame")
+  }
+  
+  row.names(.tor) <- 1:nrow(.tor)
+  
+  return(.tor)
+  
+}
 
 miscRLoaded <- TRUE
 
