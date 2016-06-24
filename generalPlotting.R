@@ -76,7 +76,7 @@ theme_complete_bw <- function (base_size = 11, base_family = "") {
         axis.title.y = element_text(angle = 0, margin = margin(r = 0.8 * half_line, l = 0.8 * half_line/2)), 
         
         legend.background = element_rect(colour = NA), legend.margin = unit(0.2, "cm"), 
-        legend.key = element_rect(fill = "black", colour = "white"), 
+        legend.key = element_rect(fill = "white", colour = "white"), 
         legend.key.size = unit(1.2, "lines"), 
         legend.key.height = NULL, legend.key.width = NULL, legend.text = element_text(size = rel(0.8)), 
         legend.text.align = NULL, legend.title = element_text(hjust = 0), 
@@ -109,7 +109,8 @@ theme_complete_bw <- function (base_size = 11, base_family = "") {
                              half_line, half_line), complete = TRUE
   )
 }
- 
+
+# theme_set(theme_complete_bw())
 # returns the legend from a ggplot object
 g_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
